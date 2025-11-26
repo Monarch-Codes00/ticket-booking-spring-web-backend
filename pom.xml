@@ -9,10 +9,10 @@
         <relativePath/>
     </parent>
     <groupId>com.aptechph</groupId>
-    <artifactId>task_management_system</artifactId>
+    <artifactId>ticket-booking-system</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>task_management_system</name>
-    <description>Developing an automated task management system</description>
+    <name>ticket-booking-system</name>
+    <description>A vintage ticket booking system backend for entertainment events</description>
     <url/>
     <licenses>
         <license/>

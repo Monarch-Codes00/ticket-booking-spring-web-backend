@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/task_management_system
+    url: jdbc:postgresql://localhost:5432/ticket_bookin
     username: postgres
     password: christopher
     driver-class-name: org.postgresql.Driver

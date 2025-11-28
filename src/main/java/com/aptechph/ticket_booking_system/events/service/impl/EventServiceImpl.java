@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,11 +22,22 @@ public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
+
+    private EventResponseDto formatEventResponse(Event event) {
+        EventResponseDto dto = eventMapper.toResponseDto(event);
+        if (event.getEventDate() != null) {
+            dto.setDate(event.getEventDate().toLocalDate().format(dateFormatter));
+            dto.setTime(event.getEventDate().toLocalTime().format(timeFormatter));
+        }
+        return dto;
+    }
 
     @Override
     public List<EventResponseDto> getAllEvents() {
         return eventRepository.findAll().stream()
-                .map(eventMapper::toResponseDto)
+                .map(this::formatEventResponse)
                 .collect(Collectors.toList());
     }
 
@@ -33,7 +45,7 @@ public class EventServiceImpl implements EventService {
     public EventResponseDto getEventById(Long id) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
-        return eventMapper.toResponseDto(event);
+        return formatEventResponse(event);
     }
 
     @Override
@@ -41,7 +53,7 @@ public class EventServiceImpl implements EventService {
     public EventResponseDto createEvent(EventRequestDto requestDto) {
         Event event = eventMapper.toEntity(requestDto);
         Event savedEvent = eventRepository.save(event);
-        return eventMapper.toResponseDto(savedEvent);
+        return formatEventResponse(savedEvent);
     }
 
     @Override
@@ -60,7 +72,7 @@ public class EventServiceImpl implements EventService {
         existingEvent.setAvailableSeats(requestDto.getAvailableSeats());
         existingEvent.setImageUrl(requestDto.getImageUrl());
         Event savedEvent = eventRepository.save(existingEvent);
-        return eventMapper.toResponseDto(savedEvent);
+        return formatEventResponse(savedEvent);
     }
 
     @Override
@@ -75,35 +87,35 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventResponseDto> getEventsByCategory(String category) {
         return eventRepository.findByCategory(category).stream()
-                .map(eventMapper::toResponseDto)
+                .map(this::formatEventResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<EventResponseDto> getEventsByLocation(String location) {
         return eventRepository.findByLocation(location).stream()
-                .map(eventMapper::toResponseDto)
+                .map(this::formatEventResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<EventResponseDto> getEventsByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
         return eventRepository.findByEventDateBetween(startDate, endDate).stream()
-                .map(eventMapper::toResponseDto)
+                .map(this::formatEventResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<EventResponseDto> searchEvents(String keyword) {
         return eventRepository.searchByKeyword(keyword).stream()
-                .map(eventMapper::toResponseDto)
+                .map(this::formatEventResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<EventResponseDto> getUpcomingEvents() {
         return eventRepository.findUpcomingEvents(LocalDateTime.now()).stream()
-                .map(eventMapper::toResponseDto)
+                .map(this::formatEventResponse)
                 .collect(Collectors.toList());
     }
 

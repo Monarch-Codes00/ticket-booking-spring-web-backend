@@ -6,17 +6,18 @@ import com.aptechph.ticket_booking_system.events.model.Event;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.time.format.DateTimeFormatter;
-
 @Mapper(componentModel = "spring")
 public interface EventMapper {
 
-    @Mapping(target = "date", expression = "java(event.getEventDate().toLocalDate().format(DateTimeFormatter.ofPattern(\"MMM dd, yyyy\")))")
-    @Mapping(target = "time", expression = "java(event.getEventDate().toLocalTime().format(DateTimeFormatter.ofPattern(\"h:mm a\")))")
+    @Mapping(target = "date", ignore = true)
+    @Mapping(target = "time", ignore = true)
     @Mapping(target = "image", source = "imageUrl")
     EventResponseDto toResponseDto(Event event);
 
     @Mapping(target = "eventDate", source = "eventDate")
     @Mapping(target = "imageUrl", source = "imageUrl")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     Event toEntity(EventRequestDto requestDto);
 }

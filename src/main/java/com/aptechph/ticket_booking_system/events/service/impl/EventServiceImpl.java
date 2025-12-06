@@ -137,4 +137,15 @@ public class EventServiceImpl implements EventService {
         event.setAvailableSeats(event.getAvailableSeats() - seatsToReduce);
         eventRepository.save(event);
     }
+
+    @Override
+    @Transactional
+    public void updateEventImages(List<String> imageUrls) {
+        List<Event> events = eventRepository.findAll();
+        for (int i = 0; i < events.size() && i < imageUrls.size(); i++) {
+            Event event = events.get(i);
+            event.setImageUrl(imageUrls.get(i % imageUrls.size()));
+            eventRepository.save(event);
+        }
+    }
 }

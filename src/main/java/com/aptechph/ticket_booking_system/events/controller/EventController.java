@@ -16,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EventController {
     private final EventService eventService;
+    private final CloudinaryUploader cloudinaryUploader;
 
     @GetMapping
     public ResponseEntity<List<EventResponseDto>> getAll(@RequestParam(required = false) String category,
@@ -47,5 +48,16 @@ public class EventController {
     public ResponseEntity<EventResponseDto> create(@RequestBody EventRequestDto dto) {
         EventResponseDto created = eventService.createEvent(dto);
         return ResponseEntity.ok(created);
+    }
+
+    @PostMapping("/upload-images")
+    public ResponseEntity<String> uploadImages() {
+        try {
+            List<String> imageUrls = cloudinaryUploader.uploadEventImages();
+            eventService.updateEventImages(imageUrls);
+            return ResponseEntity.ok("Images uploaded and events updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Failed to upload images: " + e.getMessage());
+        }
     }
 }

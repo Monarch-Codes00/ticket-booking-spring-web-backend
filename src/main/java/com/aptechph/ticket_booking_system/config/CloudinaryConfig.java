@@ -1,0 +1,21 @@
+package com.aptechph.ticket_booking_system.config;
+
+import com.cloudinary.Cloudinary;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Configuration
+public class CloudinaryConfig {
+
+    @Bean
+    public Cloudinary cloudinary() {
+        Map<String, String> config = new HashMap<>();
+        config.put("cloud_name", "dvx14gqsa");
+        config.put("api_key", "489779135926144");
+        config.put("api_secret", "Tx3txTocJXHYhPq6o8H96VrPf80");
+        return new Cloudinary(config);
+    }
+}

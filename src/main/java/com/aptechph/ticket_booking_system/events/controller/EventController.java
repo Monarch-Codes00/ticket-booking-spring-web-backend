@@ -1,5 +1,6 @@
 package com.aptechph.ticket_booking_system.events.controller;
 
+import com.aptechph.ticket_booking_system.CloudinaryUploader;
 import com.aptechph.ticket_booking_system.events.dto.EventRequestDto;
 import com.aptechph.ticket_booking_system.events.dto.EventResponseDto;
 import com.aptechph.ticket_booking_system.events.service.EventService;

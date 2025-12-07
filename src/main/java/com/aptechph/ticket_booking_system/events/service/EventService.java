@@ -22,4 +22,7 @@ public interface EventService {
 
     boolean hasAvailableSeats(Long eventId, int requestedSeats);
     void updateAvailableSeats(Long eventId, int seatsToReduce);
+    
+    // Update image URLs for events (e.g., after uploading to Cloudinary)
+    void updateEventImages(java.util.List<String> imageUrls);
 }

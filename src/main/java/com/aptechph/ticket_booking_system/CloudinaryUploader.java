@@ -2,47 +2,33 @@ package com.aptechph.ticket_booking_system;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import org.springframework.stereotype.Component;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
+@Component
 public class CloudinaryUploader {
-
     public static void main(String[] args) {
-        Map<String, String> config = new HashMap<>();
-        config.put("cloud_name", "dvx14gqsa");
-        config.put("api_key", "489779135926144");
-        config.put("api_secret", "Tx3txTocJXHYhPq6o8H96VrPf80");
-
-        Cloudinary cloudinary = new Cloudinary(config);
-
-        String[] imageFiles = {
-            "124e1a5a6973d3b7ce8573d2f44d8997.jpg",
-            "20210725093508.jpeg",
-            "b38c06b09451a3a5da09eb19183b0e62.jpg",
-            "bc911466780114572ad91af5ad853876.jpg"
-        };
-
-        for (String fileName : imageFiles) {
-            try (FileInputStream inputStream = new FileInputStream(fileName)) {
-                Map<?,?> uploadResult = cloudinary.uploader().upload(inputStream, ObjectUtils.emptyMap());
-                String secureUrl = (String) uploadResult.get("secure_url");
-                System.out.println("Uploaded " + fileName + " successfully. URL: " + secureUrl);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try {
+            CloudinaryUploader uploader = new CloudinaryUploader();
+            List<String> random = uploader.getRandomImageUrls(4);
+            System.out.println("Sample random Cloudinary image URLs:");
+            for (String url : random) System.out.println(url);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     /**
-     * Uploads a predefined set of event images to Cloudinary and returns their secure URLs.
-     * This mirrors the logic in the main method but returns the collected URLs.
+     * Retrieves existing event images from Cloudinary and returns their secure URLs.
      */
-    public List<String> uploadEventImages() throws IOException {
+    @SuppressWarnings("unchecked")
+    public List<String> getAllImageUrls() throws Exception {
         Map<String, String> config = new HashMap<>();
         config.put("cloud_name", "dvx14gqsa");
         config.put("api_key", "489779135926144");
@@ -50,22 +36,27 @@ public class CloudinaryUploader {
 
         Cloudinary cloudinary = new Cloudinary(config);
 
-        String[] imageFiles = {
-            "124e1a5a6973d3b7ce8573d2f44d8997.jpg",
-            "20210725093508.jpeg",
-            "b38c06b09451a3a5da09eb19183b0e62.jpg",
-            "bc911466780114572ad91af5ad853876.jpg"
-        };
-
-        List<String> uploadedUrls = new ArrayList<>();
-        for (String fileName : imageFiles) {
-            try (FileInputStream inputStream = new FileInputStream(fileName)) {
-                Map<?,?> uploadResult = cloudinary.uploader().upload(inputStream, ObjectUtils.emptyMap());
-                String secureUrl = (String) uploadResult.get("secure_url");
-                if (secureUrl != null) uploadedUrls.add(secureUrl);
+        Map<String, Object> result = (Map<String, Object>) cloudinary.api().resources(ObjectUtils.asMap("resource_type", "image"));
+        List<Map<String, Object>> resources = (List<Map<String, Object>>) result.get("resources");
+        List<String> imageUrls = new ArrayList<>();
+        if (resources != null) {
+            for (Map<String, Object> resource : resources) {
+                Object secureUrl = resource.get("secure_url");
+                if (secureUrl != null) imageUrls.add(secureUrl.toString());
             }
         }
 
-        return uploadedUrls;
+        return imageUrls;
+    }
+
+    /**
+     * Return a list of `count` random image URLs (or fewer if not enough images).
+     */
+    public List<String> getRandomImageUrls(int count) throws Exception {
+        List<String> urls = getAllImageUrls();
+        if (urls.isEmpty() || count <= 0) return new ArrayList<>();
+        Collections.shuffle(urls, new Random());
+        if (count >= urls.size()) return new ArrayList<>(urls);
+        return new ArrayList<>(urls.subList(0, count));
     }
 }

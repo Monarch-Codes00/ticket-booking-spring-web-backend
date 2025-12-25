@@ -54,7 +54,8 @@ public class EventController {
     @PostMapping("/upload-images")
     public ResponseEntity<String> uploadImages() {
         try {
-            List<String> imageUrls = cloudinaryUploader.uploadEventImages();
+            int eventCount = eventService.getAllEvents().size();
+            List<String> imageUrls = cloudinaryUploader.getRandomImageUrls(eventCount);
             eventService.updateEventImages(imageUrls);
             return ResponseEntity.ok("Images uploaded and events updated successfully");
         } catch (Exception e) {
@@ -62,3 +63,4 @@ public class EventController {
         }
     }
 }
+

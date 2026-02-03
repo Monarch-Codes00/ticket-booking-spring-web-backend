@@ -21,7 +21,7 @@ import java.util.Map;
 @RequestMapping("/api/webhook")
 public class PaymentWebhookController {
 
-    private static final String PAYSTACK_SECRET_KEY = "your-paystack-secret-key"; // Replace with your Paystack secret key
+    private static final String PAYSTACK_SECRET_KEY = "sk_test_e75d95018a916bc5948eeb274409a1637432e8a0"; // Updated with the provided secret key
 
     private final ObjectMapper objectMapper;
 

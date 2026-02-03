@@ -59,7 +59,7 @@ public class PaymentWebhookController {
     private boolean verifyPaystackSignature(String payload, String signature) {
         try {
             Mac hasher = Mac.getInstance("HmacSHA512");
-            hasher.init(new SecretKeySpec(PAYSTACK_SECRET_KEY.getBytes(), "HmacSHA512"));
+            hasher.init(new SecretKeySpec(PAYSTACK_SECRET_KEY.getBytes(), "sk_test_675b1ef14256c493b76e4316f6a515ca"));
             byte[] hash = hasher.doFinal(payload.getBytes());
             String computedSignature = Base64.getEncoder().encodeToString(hash);
             return computedSignature.equals(signature);
@@ -79,6 +79,6 @@ public class PaymentWebhookController {
         // Log or process the payment
         System.out.println("Payment successful: Reference=" + reference + ", Amount=" + amount + ", Status=" + status);
 
-        // TODO: Update your database or perform other business logic
+      
     }
 }
